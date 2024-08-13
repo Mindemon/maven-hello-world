@@ -10,7 +10,8 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "deploy" ]
+    branches:
+      - feature/githubactions
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
