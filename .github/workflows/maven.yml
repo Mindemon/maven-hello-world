@@ -35,7 +35,7 @@ jobs:
       working-directory: myapp
     
     - name: Running Compiled Jarable 
-      if : sucess()
+      if : success()
       run: java -cp target/myapp-1.0-SNAPSHOT.jar com.myapp.app.App
       working-directory: myapp
 
