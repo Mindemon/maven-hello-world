@@ -36,7 +36,7 @@ jobs:
     
     - name: Running Compiled Jarable 
       if : success()
-      run: java -cp target/myapp-1.0-SNAPSHOT.jar com.myapp.app.App
+      run: java -jar target/myapp-1.0-SNAPSHOT.jar com.myapp.app.App
       working-directory: myapp
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
