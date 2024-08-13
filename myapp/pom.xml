@@ -109,7 +109,7 @@
                 </execution>
             </executions>
             <configuration>
-                <mainClass>com.myapp.app.App</mainClass>
+                <mainClass>com.myapp.App</mainClass>
                 <classpathScope>runtime</classpathScope>
             </configuration>
         </plugin>
