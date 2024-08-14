@@ -33,8 +33,8 @@ jobs:
         cache: maven
     - name: checking env variables are extracted from secret
       env:
-        super_secret: ${{ vars.APP_MAIN_CLASS }}
-      run: ${{ env.super_secret }}
+        super_secret: ${{ vars.APP_VERSION}}
+      run: mvn versions:set -DnewVersion=${{ env.super_secret }}
       working-directory: myapp
 
     - name: Build with Maven
