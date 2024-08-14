@@ -34,7 +34,7 @@ jobs:
       env:
         super_secret: ${{ secrets.APP_MAIN_CLASS }}
       run: |
-        echo "$super_secret"
+        echo "${{ env.super_secret }}"
       working-directory: myapp
 
     - name: Build with Maven
