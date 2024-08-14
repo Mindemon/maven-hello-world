@@ -33,7 +33,7 @@ jobs:
         cache: maven
     - name: checking env variables are extracted from secret
       env:
-        super_secret: ${{ secrets.APP_MAIN_CLASS }}
+        super_secret: ${{ vars.APP_MAIN_CLASS }}
       run: |
         echo "${{ env.super_secret }}"
       working-directory: myapp
