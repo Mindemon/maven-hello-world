@@ -4,11 +4,11 @@ determine_version() {
   ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
   echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
 
-if [[ $GITHUB_REF == refs/heads/release/* ]]; then
+  if [[ $GITHUB_REF == refs/heads/release/* ]]; then
     VERSION=${GITHUB_REF#refs/heads/release/}
-elif [[ $GITHUB_REF == refs/tags/* ]]; then
+  elif [[ $GITHUB_REF == refs/tags/* ]]; then
     VERSION=${GITHUB_REF#refs/tags/}
-elif [[ $GITHUB_REF == refs/heads/master ]]; then
+  elif [[ $GITHUB_REF == refs/heads/master ]]; then
     # Find the latest release version
     LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1)
     if [[ -n $LATEST_RELEASE ]]; then
@@ -17,7 +17,7 @@ elif [[ $GITHUB_REF == refs/heads/master ]]; then
         echo 'could not find the latest release version'
         return 1
     fi
-elif [[ $GITHUB_REF == refs/heads/feature/* ]]; then
+  elif [[ $GITHUB_REF == refs/heads/feature/* ]]; then
     # Find the latest release version
     LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1)
     if [[ -n $LATEST_RELEASE ]]; then
@@ -26,17 +26,14 @@ elif [[ $GITHUB_REF == refs/heads/feature/* ]]; then
         echo 'could not find the latest release version'
         return 1
     fi
-else
+  else
     echo 'could not determine the version'
     return 1
-fi
-else
-   echo 'could not find the latest release version'
-   return 1
-fi
+  fi
 
-echo "VERSION=$VERSION" >> $GITHUB_ENV
+  echo "VERSION=$VERSION" >> $GITHUB_ENV
 }
+
 update_pom_version() {
   mvn -q versions:set -DnewVersion=${VERSION}
   mvn -q versions:commit
