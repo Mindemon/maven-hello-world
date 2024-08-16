@@ -40,7 +40,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
+    - name: Determine version
+      id: determine-version
+      run: |
+            if [[ $GITHUB_REF == refs/tags/* ]]; then
+              TAGV=${GITHUB_REF#refs/tags/}
+            else
+              TAGV="1.0.0"
+            fi
+            echo "TAGV=$TAGV" >> $GITHUB_ENV
     - name: Extract the project current patch version, artifactId, and increment the patch version
       if: steps.changes.outputs.src == 'true'
       id: increment-version
