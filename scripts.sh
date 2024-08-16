@@ -13,7 +13,7 @@ determine_version() {
     # Fetch all branches
     git fetch --all
 
-    LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1)
+    LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
     if [[ -n $LATEST_RELEASE ]]; then
         VERSION=$LATEST_RELEASE
     else
