@@ -18,6 +18,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -28,7 +32,7 @@ jobs:
         cache: maven
     - name: Set Project Version and Extract Version from pom.xml 
       run: |
-          mvn -q versions:set -DnewVersion=1.0.0
+          mvn -q versions:set -DnewVersion=1.0.1
           echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       working-directory: myapp
 
@@ -39,8 +43,11 @@ jobs:
     - name: Build and Run Packaged Java Application
       run: |
         mvn -B package --file pom.xml > /dev/null
-        java -jar target/myapp-${{ env.VERSION }}.jar com.myapp.app.App
       working-directory: myapp
       if: success() # Only run if the previous step is successful
-
+    
+    - name: Publish package #publish the artifact to GitHub Package Registry
+      run: mvn --batch-mode deploy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
