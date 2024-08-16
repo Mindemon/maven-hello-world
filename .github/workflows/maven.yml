@@ -30,10 +30,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Set Project Version and Extract Version from pom.xml 
+
+    - name: Extract the project current patch version ,artifcatID  and increment the patch version
+      id: increment-version
       run: |
-          mvn -q versions:set -DnewVersion=1.0.1
-          echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        echo "ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
+        echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        CURRENT_VERSION=${{ env.VERSION }}
+        IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+        PATCH_VERSION=${version_parts[2]}
+        NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
+        NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$NEW_PATCH_VERSION"
+        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+        mvn -q versions:set -DnewVersion=${{ env.NEW_VERSION }}
       working-directory: myapp
 
     - name: Clean, Compile, and Run Java Application
@@ -41,17 +50,16 @@ jobs:
       working-directory: myapp
 
     - name: Build and Run Packaged Java Application
-      run: |
-        mvn -B package --file pom.xml > /dev/null
+      run: mvn -B package --file pom.xml > /dev/null
       working-directory: myapp
       if: success() # Only run if the previous step is successful
     
-    - name: Publish package #publish the artifact to GitHub Package Registry
-      run: mvn --batch-mode  deploy
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      continue-on-error: true
-      working-directory: myapp
+    - name: upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.ARTIFACT_ID }}-${{ env.NEW_VERSION }}
+        path: target/myapp-${{ env.NEW_VERSION }}.jar
+        working-directory: myapp
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -66,13 +74,14 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/myapp:latest
-          ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.VERSION }}
+          ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.NEW_VERSION }}
         build-args: |
-          BUILD_VERSION=${{ env.VERSION }}
+          BUILD_VERSION=${{ env.NEW_VERSION }}
   
 
   
     - name: Verify Docker image
       run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+      
 
 
