@@ -38,6 +38,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Fetch all branches
+      run: git fetch --all
+      
     - name: Move script to myapp directory
       run: mv ./scripts.sh ./myapp/scripts/build_functions.sh
 
