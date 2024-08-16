@@ -4,6 +4,7 @@ on:
     branches:
       - release/*
       - feature/*
+      - main
   pull_request:
     branches:
       - main
