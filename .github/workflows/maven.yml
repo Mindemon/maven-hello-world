@@ -57,7 +57,7 @@ jobs:
           NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$NEW_PATCH_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           echo "New version: $NEW_VERSION"
-          mvn -q versions:set -DnewVersion=$NEW_VERSION
+          mvn versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
           mvn -q versions:commit
       working-directory: myapp
   
