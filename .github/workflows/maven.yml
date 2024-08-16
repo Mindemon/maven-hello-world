@@ -61,15 +61,15 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
-        file: Dockerfile
+        context: ../../
+        file: ./Dockerfile
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/myapp:latest
           ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.VERSION }}
         build-args: |
           BUILD_VERSION=${{ env.VERSION }}
-        working-directory: ../..
+  
 
   
     - name: Verify Docker image
