@@ -27,7 +27,7 @@ jobs:
         filters: |
           src:
             - 'myapp/**'
-        base: 'HEAD^'
+        base: ${{ env.GITHUB_REF }}^
         target: 'HEAD'
 
     - name: Set up JDK 17
