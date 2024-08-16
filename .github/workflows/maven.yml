@@ -20,14 +20,13 @@ jobs:
     steps: 
     - uses: actions/checkout@v4
 
-
     - name: Check for changes in Project Directory
       uses: dorny/paths-filter@v3
       id: changes
       with:
-        filters: |
-          src:
-            - 'myapp/**'
+       filters: |
+        src:
+          - 'myapp/src/**'
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
