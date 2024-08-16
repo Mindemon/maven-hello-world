@@ -43,7 +43,7 @@ jobs:
 
     - name: Running Compiled Jarable file  
       if : success()
-      run: java -jar target/myapp-${{ secrets.APP_VERSION }}.jar com.myapp.app.App
+      run: java -jar target/myapp-${{ env.super_secret }}.jar com.myapp.app.App
       working-directory: myapp
 
     - name: Clean, Compile, and Run Java Application ##using maven exec plugin
