@@ -47,6 +47,7 @@ jobs:
       id: determine-version
       run: |
           ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             TAGV=${GITHUB_REF#refs/tags/}
           else
