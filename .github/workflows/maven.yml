@@ -54,6 +54,7 @@ jobs:
             TAGV="1.0.0"
           fi
           echo "TAGV=$TAGV" >> $GITHUB_ENV
+      working-directory: myapp
       
     - name: Update POM version
       run: |
