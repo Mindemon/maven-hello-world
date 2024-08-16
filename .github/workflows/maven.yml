@@ -1,13 +1,8 @@
-name: Java CI with Maven
+name: Maven CI/CD Pipeline
 on:
   push:
-    branches:
-      - feature/automated-pipeline
     tags:
-      - '1.0.*' # Trigger the workflow on all tags
-  pull_request:
-    branches: [ "master" ]
-  workflow_dispatch:
+      - '1.0.*' # Trigger the workflow on all tags that match 1.0.*
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,8 +10,9 @@ jobs:
       contents: read
       packages: write
 
-    steps:
+    steps: 
     - uses: actions/checkout@v4
+
 
     - name: Check for changes in Project Directory
       uses: dorny/paths-filter@v3
