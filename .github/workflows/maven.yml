@@ -58,6 +58,7 @@ jobs:
       run: |
           mvn versions:set -DnewVersion=${{ env.TAGV }}
           mvn versions:commit
+      working-directory: myapp
       
     # - name: Extract the project current patch version, artifactId, and increment the patch version
     #   if: steps.changes.outputs.src == 'true'
