@@ -36,16 +36,8 @@ jobs:
       run: mvn -q versions:set -DnewVersion=${{ env.super_secret }}
       working-directory: myapp
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml > /dev/null    ##Omitting package metadata during build to save IO buffer
-      working-directory: myapp
 
-    - name: Running Compiled Jarable file  
-      if : success()
-      run: java -jar target/myapp-${{ env.super_secret }}.jar com.myapp.app.App
-      working-directory: myapp
-
-    - name: Clean, Compile, and Run Java Application ##using maven exec plugin
+    - name: Clean, Compile, and Run Java Applicatin ##bundling all the steps in one
       if : success()
       run: mvn -q clean compile exec:java
       working-directory: myapp
