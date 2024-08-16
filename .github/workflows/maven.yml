@@ -10,7 +10,7 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      - feature/githubactions
+      - feature/automated-pipeline
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
