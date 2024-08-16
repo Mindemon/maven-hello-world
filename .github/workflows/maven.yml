@@ -28,7 +28,7 @@ jobs:
           src:
             - 'myapp/**'
         base: ${{ env.GITHUB_REF }}^
-        target: 'HEAD'
+        ref: 'HEAD'
 
     - name: Set up JDK 17
       if: steps.changes.outputs.myapp == 'false'
