@@ -8,7 +8,7 @@ determine_version() {
     VERSION=${GITHUB_REF#refs/heads/release/}
   elif [[ $GITHUB_REF == refs/tags/* ]]; then
     VERSION=${GITHUB_REF#refs/tags/}
-  elif [[ $GITHUB_REF == refs/heads/master ]]; then
+  elif [[ $GITHUB_REF == refs/heads/main ]]; then
     # Find the latest release version
     LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1)
     if [[ -n $LATEST_RELEASE ]]; then
