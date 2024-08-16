@@ -41,7 +41,7 @@ jobs:
     - name: Build & run packged  Java application #Packaging the application to jar and running the jar
       run: |
         mvn -B package --file pom.xml > /dev/null
-        java -jar target/myapp-${{ env.super_secret }}.jar com.myapp.app.App
+        java -jar target/myapp-${{ env.VERSION }}.jar com.myapp.app.App
       working-directory: myapp
       if : success() ## Only run if the previous step is successful
 
