@@ -1,10 +1,17 @@
 name: Maven CI/CD Pipeline
 on:
   push:
-    tags:
-      - '1.0.*' # Trigger the workflow on all tags that match 1.0.*
+    branches:
+      - release/*
+      - feature/*
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
 jobs:
   build:
+    if: github.event.pull_request.merged == true || github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -59,8 +66,8 @@ jobs:
       if: steps.changes.outputs.src == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.ARTIFACT_ID }}-${{ env.TAGV }}
-        path: myapp/target/${{ env.ARTIFACT_ID }}-${{ env.TAGV }}.jar
+        name: ${{ env.ARTIFACT_ID }}-${{ env.VERSION }}
+        path: myapp/target/${{ env.ARTIFACT_ID }}-${{ env.VERSION }}.jar
 
     - name: Log in to Docker Hub
       if: steps.changes.outputs.src == 'true'
@@ -78,9 +85,9 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/myapp:latest
-          ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.TAGV }}
+          ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.VERSION }}
         build-args: |
-          BUILD_VERSION=${{ env.TAGV }}
+          BUILD_VERSION=${{ env.VERSION }}
 
     - name: Verify Docker image
       run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/myapp:latest
