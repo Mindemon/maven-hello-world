@@ -31,10 +31,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: checking env variables are extracted from secret
+    - name: Fetching Current Project version
       env:
         super_secret: ${{ vars.APP_VERSION}}
-      run: mvn versions:set -DnewVersion=${{ env.super_secret }}
+      run: mvn -q versions:set -DnewVersion=${{ env.super_secret }}
       working-directory: myapp
 
     - name: Build with Maven
@@ -43,7 +43,7 @@ jobs:
 
     - name: Running Compiled Jarable file  
       if : success()
-      run: java -jar target/myapp-1.0-SNAPSHOT.jar com.myapp.app.App
+      run: java -jar target/myapp-${{ secrets.APP_VERSION }}.jar com.myapp.app.App
       working-directory: myapp
 
     - name: Clean, Compile, and Run Java Application ##using maven exec plugin
