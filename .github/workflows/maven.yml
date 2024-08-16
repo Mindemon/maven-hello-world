@@ -11,6 +11,8 @@ on:
   push:
     branches:
       - feature/automated-pipeline
+    tags :
+      - '*' # Trigger the workflow on all tags'
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
