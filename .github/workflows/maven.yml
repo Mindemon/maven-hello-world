@@ -31,19 +31,24 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Extract the project current patch version ,artifcatID  and increment the patch version
+    - name: Extract the project current patch version, artifactId, and increment the patch version
       id: increment-version
       run: |
-        echo "ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
-        echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-        CURRENT_VERSION=${{ env.VERSION }}
-        IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
-        PATCH_VERSION=${version_parts[2]}
-        NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
-        NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$NEW_PATCH_VERSION"
-        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-        mvn -q versions:set -DnewVersion=${{ env.NEW_VERSION }}
+          ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Extracted ARTIFACT_ID: $ARTIFACT_ID"
+          echo "Extracted VERSION: $VERSION"
+          IFS='.' read -r -a version_parts <<< "$VERSION"
+          PATCH_VERSION=${version_parts[2]}
+          NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
+          NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$NEW_PATCH_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "New version: $NEW_VERSION"
+          mvn -q versions:set -DnewVersion=$NEW_VERSION
       working-directory: myapp
+  
 
     - name: Clean, Compile, and Run Java Application
       run: mvn -q clean compile exec:java
