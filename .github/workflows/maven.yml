@@ -42,34 +42,34 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
     - name: Determine version
       id: determine-version
       run: |
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              TAGV=${GITHUB_REF#refs/tags/}
-            else
-              TAGV="1.0.0"
-            fi
-            echo "TAGV=$TAGV" >> $GITHUB_ENV
-    - name: Extract the project current patch version, artifactId, and increment the patch version
-      if: steps.changes.outputs.src == 'true'
-      id: increment-version
-      run: |
           ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Extracted ARTIFACT_ID: $ARTIFACT_ID"
-          echo "Extracted VERSION: $VERSION"
-          IFS='.' read -r -a version_parts <<< "$VERSION"
-          PATCH_VERSION=${version_parts[2]}
-          NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
-          NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$NEW_PATCH_VERSION"
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          echo "New version: $NEW_VERSION"
-          mvn versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
-          mvn -q versions:commit
-      working-directory: myapp
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            TAGV=${GITHUB_REF#refs/tags/}
+          else
+            TAGV="1.0.0"
+          fi
+          echo "TAGV=$TAGV" >> $GITHUB_ENV
+      
+    - name: Update POM version
+      run: |
+          mvn versions:set -DnewVersion=${{ env.TAGV }}
+          mvn versions:commit
+      
+    # - name: Extract the project current patch version, artifactId, and increment the patch version
+    #   if: steps.changes.outputs.src == 'true'
+    #   id: increment-version
+    #   run: |
+    #       ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+    #       VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    #       echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
+    #       echo "VERSION=$VERSION" >> $GITHUB_ENV
+    #       echo "Extracted ARTIFACT_ID: $ARTIFACT_ID"
+    #       echo "Extracted VERSION: $VERSION"
+    #       IFS='.' read -r -a version_parts <<< "$VERSION"
   
 
     - name: Clean, Compile, and Run Java Application
@@ -85,8 +85,8 @@ jobs:
       if: steps.changes.outputs.src == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.ARTIFACT_ID }}-${{ env.NEW_VERSION }}
-        path: myapp/target/${{ env.ARTIFACT_ID }}-${{ env.NEW_VERSION }}.jar
+        name: ${{ env.ARTIFACT_ID }}-${{ env.TAGV }}
+        path: myapp/target/${{ env.ARTIFACT_ID }}-${{ env.TAGV }}.jar
 
     - name: Log in to Docker Hub
       if: steps.changes.outputs.src == 'true'
@@ -104,9 +104,9 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/myapp:latest
-          ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.NEW_VERSION }}
+          ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.TAGV }}
         build-args: |
-          BUILD_VERSION=${{ env.NEW_VERSION }}
+          BUILD_VERSION=${{ env.TAGV }}
   
 
   
