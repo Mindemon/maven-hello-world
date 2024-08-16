@@ -22,7 +22,8 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: stage
-
+    env:
+      super_secret: ${{ vars.APP_VERSION }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -32,8 +33,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Fetching Current Project version
-      env:
-        super_secret: ${{ vars.APP_VERSION}}
       run: mvn -q versions:set -DnewVersion=${{ env.super_secret }}
       working-directory: myapp
 
