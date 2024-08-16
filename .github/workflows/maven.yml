@@ -34,7 +34,7 @@ jobs:
         cache: maven
 
     - name: Move script to myapp directory
-      run: mv ./script.sh ./myapp/scripts/build_functions.sh
+      run: mv ./scripts.sh ./myapp/scripts/build_functions.sh
 
     - name: Source build functions
       run: source ./scripts/build_functions.sh
