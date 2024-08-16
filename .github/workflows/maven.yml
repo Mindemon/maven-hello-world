@@ -24,9 +24,12 @@ jobs:
       uses: dorny/paths-filter@v3
       id: changes
       with:
-       filters: |
-        src:
-          - 'myapp/src/**'
+        filters: |
+          src:
+            - 'myapp/src/**'
+        base: ${{ github.event.before }}
+        head: ${{ github.sha }}
+
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
