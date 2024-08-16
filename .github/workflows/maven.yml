@@ -22,7 +22,7 @@ jobs:
 
     - name: Get previous commit
       id: prev-commit
-      run: echo "::set-output name=prev_commit::$(git rev-parse $GITHUB_SHA~1)"
+      run: echo "::set-output name=prev_commit::$(git rev-list -n 1 HEAD^1)"
 
     - name: Check for changes in Project Directory
       uses: dorny/paths-filter@v3
