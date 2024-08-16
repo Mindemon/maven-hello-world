@@ -24,6 +24,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Check for changes in myapp/src/main/*
+      uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          src:
+            - 'myapp/src/main/**'
+
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -32,6 +42,7 @@ jobs:
         cache: maven
 
     - name: Extract the project current patch version, artifactId, and increment the patch version
+      if: steps.changes.outputs.src == 'true'
       id: increment-version
       run: |
           ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
@@ -59,18 +70,22 @@ jobs:
       working-directory: myapp
       if: success() # Only run if the previous step is successful
     
-    - name: upload artifact
+    - name: Upload artifact
+      if: steps.changes.outputs.src == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.ARTIFACT_ID }}-${{ env.NEW_VERSION }}
         path: myapp/target/${{ env.ARTIFACT_ID }}-${{ env.NEW_VERSION }}.jar
 
     - name: Log in to Docker Hub
+      if: steps.changes.outputs.src == 'true'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
     - name: Build and push Docker image
+      if: steps.changes.outputs.src == 'true'
       uses: docker/build-push-action@v4
       with:
         context: .
@@ -87,5 +102,6 @@ jobs:
     - name: Verify Docker image
       run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/myapp:latest
       
-
-
+    - name: No changes detected
+      if: steps.changes.outputs.src != 'true'
+      run: echo "No changes were made in myapp/src/main/*, hence no artifact was uploaded or Docker image was built."
