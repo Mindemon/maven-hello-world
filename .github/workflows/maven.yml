@@ -26,23 +26,21 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-## Cache the maven dependencies to speed up the build process
-    - name: Set Project Version and Extract Version from pom.xml ## Setting the project version and extracting the version from pom.xml for further use
-      id: set_and_extract_version
+    - name: Set Project Version and Extract Version from pom.xml 
       run: |
           mvn -q versions:set -DnewVersion=1.0.0
           echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       working-directory: myapp
 
-    - name: Clean, Compile, and Run Java Application #Cleaning & Running the application before packaging to jar
+    - name: Clean, Compile, and Run Java Application
       run: mvn -q clean compile exec:java
       working-directory: myapp
 
-    - name: Build & run packged  Java application #Packaging the application to jar and running the jar
+    - name: Build and Run Packaged Java Application
       run: |
         mvn -B package --file pom.xml > /dev/null
         java -jar target/myapp-${{ env.VERSION }}.jar com.myapp.app.App
       working-directory: myapp
-      if : success() ## Only run if the previous step is successful
+      if: success() # Only run if the previous step is successful
 
 
