@@ -47,5 +47,5 @@ jobs:
 
     - name: Clean, Compile, and Run Java Application ##using maven exec plugin
       if : success()
-      run: mvn clean compile exec:java
+      run: mvn -q clean compile exec:java
       working-directory: myapp
