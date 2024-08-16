@@ -7,7 +7,6 @@
 # documentation.
 
 name: Java CI with Maven
-
 on:
   push:
     branches:
@@ -15,15 +14,10 @@ on:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
-  
-
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    environment: stage
-    env:
-      super_secret: ${{ vars.APP_VERSION }} ## Setting the version of the application from github secrets
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -32,8 +26,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Setting Project Version to 1.0.0
-      run: mvn -q versions:set -DnewVersion=${{ env.super_secret }}
+## Cache the maven dependencies to speed up the build process
+    - name: Set Project Version and Extract Version from pom.xml ## Setting the project version and extracting the version from pom.xml for further use
+      id: set_and_extract_version
+      run: |
+          mvn -q versions:set -DnewVersion=1.0.0
+          echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       working-directory: myapp
 
     - name: Clean, Compile, and Run Java Application #Cleaning & Running the application before packaging to jar
