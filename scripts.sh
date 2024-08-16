@@ -34,7 +34,7 @@ determine_version() {
     return 1
   fi
 
-  # echo "VERSION=$VERSION" >> $GITHUB_ENV
+  echo "VERSION=$VERSION" >> $GITHUB_ENV
 }
 
 update_pom_version() {
