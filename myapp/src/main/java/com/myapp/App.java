@@ -8,6 +8,6 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "this is myapp version 1.0.0 testing this!" );
+        System.out.println( "this build should be  on version 1.0.1" );
     }
 }

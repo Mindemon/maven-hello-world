@@ -56,8 +56,8 @@ jobs:
       
     - name: Update POM version
       run: |
-          mvn versions:set -DnewVersion=${{ env.TAGV }}
-          mvn versions:commit
+          mvn -q versions:set -DnewVersion=${{ env.TAGV }}
+          mvn -q versions:commit
       working-directory: myapp
       
     # - name: Extract the project current patch version, artifactId, and increment the patch version
