@@ -1,147 +1,53 @@
-# A simple, minimal Maven example: hello world
+This repository is a fork of the Hello World Maven project. It includes a GitHub Actions pipeline that automates the build, test, packaging, and deployment process. The pipeline performs the following tasks:
 
-To create the files in this git repo we've already run `mvn archetype:generate` from http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
-    
-    mvn archetype:generate -DgroupId=com.myapp.app -DartifactId=myapp -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+	•	Check for Changes: Detects modifications in the myapp directory.
+	•	Build the Application: Compiles and packages the Java application.
+	•	Version Management: Automatically determines and updates the version.
+	•	Artifact Handling: Uploads the JAR file as an artifact.
+	•	Docker Integration: Builds and pushes a Docker image to Docker Hub.
+	•	Deployment Verification: Runs the Docker image to verify deployment.
 
-Now, to print "Hello World!", type either...
+How to Trigger the Pipeline
 
-    cd myapp
-    mvn compile
-    java -cp target/classes com.myapp.app.App
+The pipeline is automatically triggered by the following events:
 
-or...
+	•	Pushing a branch that starts with release/1.0.x.
+	•	Pushing a branch that starts with feature/*-1.0.x.
+	•	Creating a pull request to merge into the main branch.
+	•	Pushing a tag that starts with 1.0.x.
 
-    cd myapp
-    mvn package
-    java -cp target/myapp-1.0-SNAPSHOT.jar com.myapp.app.App
+Deploying a Release Version
 
-Running `mvn clean` will get us back to only the source Java and the `pom.xml`:
+To deploy a release version:
 
-    murphy:myapp pdurbin$ mvn clean --quiet
-    murphy:myapp pdurbin$ ack -a -f
-    pom.xml
-    src/main/java/com/myapp/app/App.java
-    src/test/java/com/myapp/app/AppTest.java
+	1.	Prepare the Release Branch:
+	•	Create or update a branch named release/* (e.g., release/v1.0.0).
+	•	Push your changes to this branch.
+	2.	Push Changes or Tags:
+	•	Push changes to the release/* branch, or push a tag to the repository.
+	•	The pipeline will:
+	1.	Check for changes in the myapp directory.
+	2.	Set up JDK 17 and Maven.
+	3.	Move necessary scripts to the appropriate directory.
+	4.	Determine the version and update the POM file if needed.
+	5.	Build, package, and upload the JAR file.
+	6.	Build and push a Docker image to Docker Hub.
+	7.	Verify the Docker image by running it.
 
-Running `mvn compile` produces a class file:
+Secrets Configuration
 
-    murphy:myapp pdurbin$ mvn compile --quiet
-    murphy:myapp pdurbin$ ack -a -f
-    pom.xml
-    src/main/java/com/myapp/app/App.java
-    src/test/java/com/myapp/app/AppTest.java
-    target/classes/com/myapp/app/App.class
-    murphy:myapp pdurbin$ 
-    murphy:myapp pdurbin$ java -cp target/classes com.myapp.app.App
-    Hello World!
+Ensure the following secrets are set in your GitHub repository:
 
-Running `mvn package` does a compile and creates the target directory, including a jar:
+	•	DOCKER_USERNAME: Your Docker Hub username.
+	•	DOCKER_PASSWORD: Your Docker Hub password.
 
-    murphy:myapp pdurbin$ mvn clean --quiet
-    murphy:myapp pdurbin$ mvn package > /dev/null
-    murphy:myapp pdurbin$ ack -a -f
-    pom.xml
-    src/main/java/com/myapp/app/App.java
-    src/test/java/com/myapp/app/AppTest.java
-    target/classes/com/myapp/app/App.class
-    target/maven-archiver/pom.properties
-    target/myapp-1.0-SNAPSHOT.jar
-    target/surefire-reports/com.myapp.app.AppTest.txt
-    target/surefire-reports/TEST-com.myapp.app.AppTest.xml
-    target/test-classes/com/myapp/app/AppTest.class
-    murphy:myapp pdurbin$ 
-    murphy:myapp pdurbin$ java -cp target/myapp-1.0-SNAPSHOT.jar com.myapp.app.App
-    Hello World!
+Scripts
 
-Running `mvn clean compile exec:java` requires http://mojo.codehaus.org/exec-maven-plugin/
+The pipeline uses a script (scripts.sh) that handles:
 
-Running `java -jar target/myapp-1.0-SNAPSHOT.jar` requires http://maven.apache.org/plugins/maven-shade-plugin/
+	•	Determining the application version.
+	•	Updating the POM version.
+	•	Cleaning, compiling, and running the application.
+	•	Packaging the application into a JAR file.
 
-# Runnable Jar:
-JAR Plugin
-The Maven’s jar plugin will create jar file and we need to define the main class that will get executed when we run the jar file.
-```
-<plugin>
-  <artifactId>maven-jar-plugin</artifactId>
-  <version>3.0.2</version>
-  <configuration>
-    <archive>
-      <manifest>
-        <addClasspath>true</addClasspath>
-        <mainClass>com.myapp.App</mainClass>
-      </manifest>
-    </archive>
-  </configuration>
-</plugin>
-```
-
-
-# Folder tree before package:
-```
-├── pom.xml
-└── src
-    ├── main
-    │   └── java
-    │       └── com
-    │           └── myapp
-    │               └── app
-    │                   └── App.java
-    └── test
-        └── java
-            └── com
-                └── myapp
-                    └── app
-                        └── AppTest.java
-
-```
-# Folder tree after package:
-```
-
-.
-├── pom.xml
-├── src
-│   ├── main
-│   │   └── java
-│   │       └── com
-│   │           └── myapp
-│   │               └── app
-│   │                   └── App.java
-│   └── test
-│       └── java
-│           └── com
-│               └── myapp
-│                   └── app
-│                       └── AppTest.java
-└── target
-    ├── classes
-    │   └── com
-    │       └── myapp
-    │           └── app
-    │               └── App.class
-    ├── generated-sources
-    │   └── annotations
-    ├── generated-test-sources
-    │   └── test-annotations
-    ├── maven-archiver
-    │   └── pom.properties
-    ├── maven-status
-    │   └── maven-compiler-plugin
-    │       ├── compile
-    │       │   └── default-compile
-    │       │       ├── createdFiles.lst
-    │       │       └── inputFiles.lst
-    │       └── testCompile
-    │           └── default-testCompile
-    │               ├── createdFiles.lst
-    │               └── inputFiles.lst
-    ├── myapp-1.0-SNAPSHOT.jar
-    ├── surefire-reports
-    │   ├── com.myapp.app.AppTest.txt
-    │   └── TEST-com.myapp.app.AppTest.xml
-    └── test-classes
-        └── com
-            └── myapp
-                └── app
-                    └── AppTest.class
-```
+This script is moved and sourced as part of the pipeline steps to ensure all functions are available during the build process.

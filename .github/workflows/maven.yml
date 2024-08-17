@@ -2,9 +2,8 @@ name: Maven CI/CD Pipeline
 on:
   push:
     branches:
-      - release/*
-      - feature/*
-      - main
+      - release/1.0.*
+      - feature/1.0.*
   pull_request:
     branches:
       - main

@@ -21,3 +21,4 @@ target/
 /.maven
 /.repository
 .flattened-pom.xml
+.DS_Store

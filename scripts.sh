@@ -22,10 +22,10 @@ determine_version() {
     fi
   elif [[ $GITHUB_REF == refs/heads/feature/* ]]; then
     # Find the latest release version
-    LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
-    if [[ -n $LATEST_RELEASE ]]; then
-        VERSION=$LATEST_RELEASE
-    else
+  LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\.x' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
+  if [[ -n $LATEST_RELEASE ]]; then
+    VERSION="$LATEST_RELEASE-SNPASHOT.jar"
+  else
         echo 'could not find the latest release version'
         return 1
     fi
