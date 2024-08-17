@@ -19,7 +19,7 @@ determine_version() {
   elif [[ $GITHUB_REF == refs/heads/feature/* ]]; then
     git fetch --all
     # Find the latest release version
-  LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\.x' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
+  LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\..*' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
   if [[ -n $LATEST_RELEASE ]]; then
     VERSION="$LATEST_RELEASE-SNPASHOT.jar"
   else
