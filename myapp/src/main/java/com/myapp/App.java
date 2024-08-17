@@ -4,7 +4,11 @@ public class App {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		while (true) {
+        long startTime = System.currentTimeMillis();
+        long duration = 5 * 1000; // 5 seconds in milliseconds
+
+        while (System.currentTimeMillis() - startTime < duration) {
+
 
 			System.out.println();
 			System.out.println();
