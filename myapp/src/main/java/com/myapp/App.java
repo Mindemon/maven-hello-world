@@ -24,7 +24,7 @@ public class App {
 			System.out.println("           I     I      ");
 			System.out.println("        -----------/              ");
 			System.out.println("                       ");
-			System.out.println("      Alex's ROFLCOPTER!              ");
+			System.out.println("     GET TO THE CHOPPA!!!              ");
 
 			Thread.sleep(100);
 
@@ -46,7 +46,7 @@ public class App {
 			System.out.println("           I     I      ");
 			System.out.println("        -----------/              ");
 			System.out.println("                       ");
-			System.out.println("      Alex's ROFLCOPTER!              ");
+			System.out.println("      RESUCE IS HERE!!!              ");
 
 			Thread.sleep(100);
 		}
