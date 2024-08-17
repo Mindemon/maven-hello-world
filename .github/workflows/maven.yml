@@ -4,7 +4,8 @@ on:
     branches:
       - release/*
       - feature/*
-      - main
+    tags:
+      - '1.0.*'
   pull_request:
     branches:
       - main
