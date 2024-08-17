@@ -26,6 +26,20 @@ determine_version() {
         echo 'could not find the latest release version'
         return 1
     fi
+  elif [[ $GITHUB_REF == refs/pull/* ]]; then
+    # Extract the base branch from the pull request reference
+    BASE_BRANCH=$(jq -r '.base.ref' "$GITHUB_EVENT_PATH")
+    if [[ $BASE_BRANCH == main ]]; then
+      # Find the latest release version
+      git fetch --all
+
+      LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
+      if [[ -n $LATEST_RELEASE ]]; then
+          VERSION=$LATEST_RELEASE
+      else
+          echo 'could not find the latest release version'
+          return 1
+      fi
   else
     echo 'could not determine the version'
     return 1
