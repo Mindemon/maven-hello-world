@@ -1,10 +1,11 @@
-package com.myapp;
 
 public class App {
 
 	public static void main(String[] args) throws InterruptedException {
+        long startTime = System.currentTimeMillis();
+        long duration = 5 * 1000; // 5 seconds in milliseconds
 
-		while (true) {
+        while (System.currentTimeMillis() - startTime < duration) {
 
 			System.out.println();
 			System.out.println();
