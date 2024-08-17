@@ -71,7 +71,7 @@ jobs:
       if: steps.changes.outputs.src == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.ARTIFACT_ID }}-${{ env.VERSION }}
+        name: ${{ env.ARTIFACT_ID }}-${{ env.VERSION }}.jar 
         path: myapp/target/${{ env.ARTIFACT_ID }}-${{ env.VERSION }}.jar
 
     - name: Log in to Docker Hub
