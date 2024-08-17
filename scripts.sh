@@ -24,7 +24,7 @@ determine_version() {
     # Find the latest release version
   LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\..*' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
   if [[ -n $LATEST_RELEASE ]]; then
-    VERSION=$(echo "$LATEST_RELEASE" | sed 's/^[^-]*-//')-SNAPSHOT.jar
+    VERSION=$(echo "$LATEST_RELEASE" | sed 's/^[^-]*-//')-SNAPSHOT
   else
         echo 'could not find the latest release version'
         return 1
