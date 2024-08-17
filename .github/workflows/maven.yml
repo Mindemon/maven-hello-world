@@ -2,8 +2,14 @@ name: Maven CI/CD Pipeline
 on:
   push:
     branches:
+      - feature/jarn-1.0.*
       - release/1.0.*
       - feature/*-1.0.*
+
+    tags:
+      - '1.0.*'
+
+
   pull_request:
     branches:
       - main

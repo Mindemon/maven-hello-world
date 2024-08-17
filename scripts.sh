@@ -9,23 +9,22 @@ determine_version() {
   elif [[ $GITHUB_REF == refs/tags/* ]]; then
     VERSION=${GITHUB_REF#refs/tags/}
   elif [[ $GITHUB_REF == refs/heads/main ]]; then
-    # Find the latest release version
-    # Fetch all branches
-    git fetch --all
-
+   git fetch --all
     LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
     if [[ -n $LATEST_RELEASE ]]; then
         VERSION=$LATEST_RELEASE
     else
-        echo 'could not find the latest release version'
         return 1
     fi
   elif [[ $GITHUB_REF == refs/heads/feature/* ]]; then
+    git fetch --all
     # Find the latest release version
+
   LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\..*' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
   if [[ -n $LATEST_RELEASE ]]; then
     VERSION=$(echo "$LATEST_RELEASE" | sed 's/^[^-]*-//')-SNAPSHOT
   else
+
         echo 'could not find the latest release version'
         return 1
     fi
