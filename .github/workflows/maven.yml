@@ -29,6 +29,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+        working-directory: myapp
 
   fetch-branches:
     runs-on: ubuntu-latest
