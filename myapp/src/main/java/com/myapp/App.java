@@ -1,18 +1,5 @@
 package com.myapp;
 
-<<<<<<< HEAD
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World STAGING version 1.0.1" );
-    }
-}
-=======
 public class App {
 
 	public static void main(String[] args) throws InterruptedException {
@@ -67,4 +54,3 @@ public class App {
 	}
 
 }
->>>>>>> parent of a3cde86 (added timeout for 5 seconds so github wont ban me for making an infinte loop in build)
