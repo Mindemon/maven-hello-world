@@ -9,7 +9,7 @@ determine_version() {
   elif [[ $GITHUB_REF == refs/tags/* ]]; then
     VERSION=${GITHUB_REF#refs/tags/}
   elif [[ $GITHUB_REF == refs/heads/main ]]; then
-   git fetch --all
+    git fetch --all
     LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
     if [[ -n $LATEST_RELEASE ]]; then
         VERSION=$LATEST_RELEASE
@@ -19,20 +19,19 @@ determine_version() {
   elif [[ $GITHUB_REF == refs/heads/feature/* ]]; then
     git fetch --all
     # Find the latest release version
-  LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\..*' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
-  if [[ -n $LATEST_RELEASE ]]; then
-    VERSION="$LATEST_RELEASE-SNPASHOT.jar"
-  else
-        echo 'could not find the latest release version'
-        return 1
+    LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\..*' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
+    if [[ -n $LATEST_RELEASE ]]; then
+      VERSION="$LATEST_RELEASE-SNAPSHOT.jar"
+    else
+      echo 'could not find the latest release version'
+      return 1
     fi
   elif [[ $GITHUB_REF == refs/pull/* ]]; then
     # Extract the base branch from the pull request reference
     BASE_BRANCH=$(jq -r '.base.ref' "$GITHUB_EVENT_PATH")
     if [[ $BASE_BRANCH == main ]]; then
-      # Find the latest release version
+      # fetch repository data to get the latest release version
       git fetch --all
-
       LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
       if [[ -n $LATEST_RELEASE ]]; then
           VERSION=$LATEST_RELEASE
@@ -40,6 +39,10 @@ determine_version() {
           echo 'could not find the latest release version'
           return 1
       fi
+    else
+      echo 'could not determine the version for pull request'
+      return 1
+    fi
   else
     echo 'could not determine the version'
     return 1
