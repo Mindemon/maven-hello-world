@@ -54,7 +54,7 @@ update_pom_version() {
 }
 
 clean_compile_run() {
-  mvn -q clean compile exec:java
+  mvn -q -B clean compile exec:java
 }
 
 build_package() {
