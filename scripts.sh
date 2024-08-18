@@ -43,8 +43,8 @@ determine_version() {
     echo 'could not determine the version'
     return 1
   fi
-
   echo "VERSION=$VERSION" >> $GITHUB_ENV
+ fi
 }
 
 
