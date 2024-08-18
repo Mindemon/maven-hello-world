@@ -3,7 +3,7 @@ public class App {
 
 	public static void main(String[] args) throws InterruptedException {
         long startTime = System.currentTimeMillis();
-        long duration = 5 * 1000; // 5 seconds in milliseconds
+        long duration = 6 * 1000; // 5 seconds in milliseconds
 
         while (System.currentTimeMillis() - startTime < duration) {
 

@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - release/1.0.*
-      - feature/1.0.*
+      - feature/*-1.0.*
     tags:
       - 1.0.*
   pull_request:
