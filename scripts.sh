@@ -49,8 +49,8 @@ determine_version() {
 
 
 update_pom_version() {
-  mvn -q versions:set -DnewVersion=${VERSION}
-  mvn -q versions:commit
+  mvn -q -B versions:set -DnewVersion=${VERSION}
+  mvn -q -B versions:commit
 }
 
 clean_compile_run() {
