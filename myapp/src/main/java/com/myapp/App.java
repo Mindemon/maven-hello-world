@@ -1,3 +1,4 @@
+package com.myapp;
 
 public class App {
 
