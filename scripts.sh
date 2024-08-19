@@ -50,6 +50,7 @@ determine_version() {
 
 
 update_pom_version() {
+  echo ${VERSION}
   mvn -q -B versions:set -DnewVersion=${VERSION}
   mvn -q -B versions:commit
 }
