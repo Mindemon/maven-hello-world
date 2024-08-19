@@ -2,11 +2,10 @@ name: Maven CI/CD Pipeline
 on:
   push:
     branches:
-      - release/*
-      - feature/*
+      - release/1.0.*
+      - feature/*-1.0.*
     tags:
-      - '1.0.*'
-
+      - 1.0.*
   pull_request:
     branches:
       - main
@@ -16,9 +15,6 @@ jobs:
   build:
     if: github.event.pull_request.merged == true || github.event_name == 'push'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps: 
     - uses: actions/checkout@v4
@@ -52,18 +48,28 @@ jobs:
       working-directory: myapp
 
     - name: Determine version
+      if: steps.changes.outputs.src == 'true'
       id: determine-version
       run: source ./scripts/build_functions.sh && determine_version
       working-directory: myapp
 
+    - name: Use previous version tag
+      if: steps.changes.outputs.src != 'true' 
+      run: source ./scripts/build_functions.sh && determine_version
+      working-directory: myapp
+
     - name: Update POM version
-      if: steps.changes.outputs.src == 'true'
       run: source ./scripts/build_functions.sh && update_pom_version
       working-directory: myapp
+      env:
+        VERSION: ${{ env.VERSION }}
 
     - name: Clean, Compile, and Run Java Application
       run: source ./scripts/build_functions.sh && clean_compile_run
       working-directory: myapp
+      env:
+        VERSION: ${{ env.VERSION }}
+
 
     - name: Build and Run Packaged Java Application
       run: source ./scripts/build_functions.sh && build_package
@@ -74,7 +80,7 @@ jobs:
       if: steps.changes.outputs.src == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.ARTIFACT_ID }}-${{ env.VERSION }}.jar
+        name: ${{ env.ARTIFACT_ID }}-${{ env.VERSION }}.jar 
         path: myapp/target/${{ env.ARTIFACT_ID }}-${{ env.VERSION }}.jar
 
     - name: Log in to Docker Hub
@@ -98,8 +104,9 @@ jobs:
           BUILD_VERSION=${{ env.VERSION }}
 
     - name: Verify Docker image
+      if: steps.changes.outputs.src == 'true'
       run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/myapp:latest
       
     - name: No changes detected
       if: steps.changes.outputs.src != 'true'
-      run: echo "No changes were made in myapp/src/main/*, hence no artifact was uploaded or Docker image was built."
+      run: echo "Changes detected only in the CI/CD pipeline; project codebase remains unchanged."
