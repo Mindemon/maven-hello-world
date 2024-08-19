@@ -48,7 +48,13 @@ jobs:
       working-directory: myapp
 
     - name: Determine version
+      if: steps.changes.outputs.src == 'true'
       id: determine-version
+      run: source ./scripts/build_functions.sh && determine_version
+      working-directory: myapp
+
+    - name: Use previous version tag
+      if: steps.changes.outputs.src != 'true' 
       run: source ./scripts/build_functions.sh && determine_version
       working-directory: myapp
 
@@ -98,4 +104,4 @@ jobs:
       
     - name: No changes detected
       if: steps.changes.outputs.src != 'true'
-      run: echo "No changes were made in myapp/src/main/*, hence no artifact was uploaded or Docker image was built."
+      run: echo "Changes detected only in the CI/CD pipeline; project codebase remains unchanged."
