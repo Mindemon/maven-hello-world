@@ -61,10 +61,13 @@ jobs:
     - name: Update POM version
       run: source ./scripts/build_functions.sh && update_pom_version
       working-directory: myapp
+      env:
+        VERSION: ${{ env.VERSION }}
 
     - name: Clean, Compile, and Run Java Application
       run: source ./scripts/build_functions.sh && clean_compile_run
       working-directory: myapp
+
 
     - name: Build and Run Packaged Java Application
       run: source ./scripts/build_functions.sh && build_package
