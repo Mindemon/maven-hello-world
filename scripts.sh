@@ -6,13 +6,16 @@ determine_version() {
 
   if [[ $GITHUB_REF == refs/heads/release/* ]]; then
     VERSION=${GITHUB_REF#refs/heads/release/}
+    echo "VERSION=$VERSION" >> $GITHUB_ENV
   elif [[ $GITHUB_REF == refs/tags/* ]]; then
     VERSION=${GITHUB_REF#refs/tags/}
+    echo "VERSION=$VERSION" >> $GITHUB_ENV
   elif [[ $GITHUB_REF == refs/heads/main ]]; then
    git fetch --all
     LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
     if [[ -n $LATEST_RELEASE ]]; then
         VERSION=$LATEST_RELEASE
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
     else
         return 1
     fi
@@ -22,6 +25,7 @@ determine_version() {
     LATEST_RELEASE=$(git branch -r | grep 'origin/feature/.*-1\.0\..*' | sed 's|origin/feature/||' | sort -V | tail -n 1 | xargs echo -n)
     if [[ -n $LATEST_RELEASE ]]; then
       VERSION="$LATEST_RELEASE-SNAPSHOT.jar"
+      echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     else
         echo 'could not find the latest release version'
@@ -36,6 +40,7 @@ determine_version() {
       LATEST_RELEASE=$(git branch -r | grep 'origin/release/' | sed 's|origin/release/||' | sort -V | tail -n 1 | xargs echo -n)
       if [[ -n $LATEST_RELEASE ]]; then
           VERSION=$LATEST_RELEASE
+           echo "VERSION=$VERSION" >> $GITHUB_ENV
       else
           echo 'could not find the latest release version'
           return 1
@@ -44,8 +49,6 @@ determine_version() {
     echo 'could not determine the version'
     return 1
   fi
-  echo "VERSION=$VERSION" >> $GITHUB_ENV
- fi
 }
 
 
