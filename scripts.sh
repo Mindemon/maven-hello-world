@@ -48,7 +48,8 @@ determine_version() {
   else
     echo 'could not determine the version'
     return 1
-  fi
+ fi
+ fi
 }
 
 
