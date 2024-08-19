@@ -67,6 +67,8 @@ jobs:
     - name: Clean, Compile, and Run Java Application
       run: source ./scripts/build_functions.sh && clean_compile_run
       working-directory: myapp
+      env:
+        VERSION: ${{ env.VERSION }}
 
 
     - name: Build and Run Packaged Java Application
