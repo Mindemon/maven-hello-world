@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "myapp1.fullname" . | lower | replace "." "-" }}
+  labels:
+    app: {{ include "myapp1.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "myapp1.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "myapp1.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name | lower | replace "_" "-" }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 80
